@@ -1,0 +1,150 @@
+{
+ "note": "Pixel coords are local to each part PNG. L/R are anatomical (character's own left/right; viewer's left = character R in a front view). prox = joint nearer the torso, dist = far end.",
+ "parts": {
+  "neck": {
+   "size": [
+    78,
+    80
+   ],
+   "prox": [
+    39,
+    8
+   ],
+   "dist": [
+    39,
+    72
+   ]
+  },
+  "upper_arm_R": {
+   "size": [
+    132,
+    137
+   ],
+   "prox": [
+    110.8,
+    19.0
+   ],
+   "dist": [
+    21.3,
+    115.6
+   ]
+  },
+  "upper_arm_L": {
+   "size": [
+    130,
+    136
+   ],
+   "prox": [
+    20.2,
+    18.7
+   ],
+   "dist": [
+    107.5,
+    116.0
+   ]
+  },
+  "forearm_R": {
+   "size": [
+    133,
+    184
+   ],
+   "prox": [
+    98.5,
+    15.5
+   ],
+   "dist": [
+    40.4,
+    166.8
+   ]
+  },
+  "forearm_L": {
+   "size": [
+    134,
+    184
+   ],
+   "prox": [
+    33.2,
+    16.0
+   ],
+   "dist": [
+    93.8,
+    166.7
+   ]
+  },
+  "thigh_R": {
+   "size": [
+    120,
+    164
+   ],
+   "prox": [
+    71.6,
+    11.9
+   ],
+   "dist": [
+    43.7,
+    151.7
+   ]
+  },
+  "thigh_L": {
+   "size": [
+    120,
+    164
+   ],
+   "prox": [
+    48.1,
+    12.0
+   ],
+   "dist": [
+    75.5,
+    151.7
+   ]
+  },
+  "lower_leg_R": {
+   "size": [
+    176,
+    208
+   ],
+   "prox": [
+    123.0,
+    15.0
+   ],
+   "dist": [
+    45.3,
+    191.2
+   ]
+  },
+  "lower_leg_L": {
+   "size": [
+    176,
+    208
+   ],
+   "prox": [
+    50.6,
+    15.3
+   ],
+   "dist": [
+    130.2,
+    191.0
+   ]
+  },
+  "head": {
+   "size": [
+    362,
+    268
+   ]
+  },
+  "torso": {
+   "size": [
+    245,
+    300
+   ]
+  },
+  "reference_full": {
+   "size": [
+    640,
+    860
+   ]
+  }
+ },
+ "status": "Pivots are auto-estimated from each piece's long axis (neck set by hand). Ankle pivots on lower_leg_* are unreliable (foot skews the axis). Verify with a test render before animating."
+}
