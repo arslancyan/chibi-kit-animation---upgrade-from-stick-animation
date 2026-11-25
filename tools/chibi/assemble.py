@@ -23,7 +23,9 @@ FIT = dict(
     hip=dict(R=(78, 262), L=(167, 262)),
     neck_socket=(122, 16),
     head_w=420,                                   # expression heads are scaled to this width
-    shirt=dict(s=0.84, anchor=(270, 44), at=(122, 10)),    # shirt-local point -> torso-local point
+    shirt=dict(s=0.84, anchor=(234, 44), at=(122, 10)),
+    sleeve=dict(len=0.78, dx=0, dy=-6),
+    ankle_row=118, foot_follow=0.35,    # shirt-local point -> torso-local point
     shorts=dict(s=0.88, anchor=(245, 20), at=(122, 168)),
     hair_front=dict(s=0.93, anchor=(240, 215), at=(0.5, 0.18)),   # at = fraction of head w/h
     hair_back=dict(s=0.93, anchor=(220, 230), at=(0.5, 0.42)),
@@ -33,6 +35,20 @@ FIT = dict(
 
 def load(*p):
     return Image.open(os.path.join(A, *p)).convert("RGBA")
+
+def axis_ends(im, frac=0.12):
+    """prox/dist ends of a piece along its long axis (prox = upper end)."""
+    a = np.asarray(im)[..., 3]; ys, xs = np.nonzero(a > 128)
+    pts = np.c_[xs, ys].astype(float); c = pts.mean(0)
+    ax = np.linalg.svd(pts - c, full_matrices=False)[2][0]
+    if ax[1] < 0: ax = -ax
+    t = (pts - c) @ ax; lo, hi = t.min(), t.max()
+    return pts[t < lo + frac * (hi - lo)].mean(0), pts[t > hi - frac * (hi - lo)].mean(0)
+
+def split_rows(im, y0, y1):
+    """copy of im keeping only rows y0 <= y < y1 (same canvas size)"""
+    a = np.asarray(im).copy(); a[:y0] = 0; a[y1:] = 0
+    return Image.fromarray(a, "RGBA")
 
 class Rig:
     def __init__(self):
@@ -105,13 +121,20 @@ class Character:
             knee = self._fwd(hip, ph, s, (M[thigh]["dist"][0] - M[thigh]["prox"][0], M[thigh]["dist"][1] - M[thigh]["prox"][1]))
             pk = P["hip_" + side] + P["knee_" + side]
             add(10, lambda t=thigh, h=hip, ph=ph: self._draw(canvas, self.img[t], M[t]["prox"], h, ph, s))
-            add(9, lambda l=ll, k=knee, pk=pk: self._draw(canvas, self.img[l], M[l]["prox"], k, pk, s))
+            ar = FIT["ankle_row"]; full = self.img[ll]
+            fa_ = np.asarray(full)[..., 3] > 128
+            xs = np.nonzero(fa_[100])[0]; ax_ = ((xs.min() + xs.max()) / 2.0, float(ar))
+            shaft, foot = split_rows(full, 0, ar + 4), split_rows(full, ar, full.height)
+            add(9, lambda sh_=shaft, k=knee, pk=pk, ll=ll: self._draw(canvas, sh_, M[ll]["prox"], k, pk, s))
+            ankle = self._fwd(knee, pk, s, (ax_[0] - M[ll]["prox"][0], ax_[1] - M[ll]["prox"][1]))
+            pfoot = pk * FIT["foot_follow"]
+            add(11, lambda f_=foot, an=ankle, pf=pfoot, ax_=ax_: self._draw(canvas, f_, ax_, an, pf, s))
             if self.clothes:
                 sz = M[ll]["size"]
-                foot_local = (sz[0] / 2 + (8 if side == "R" else -8), sz[1] - 52)
-                fk = self._fwd(knee, pk, s, (foot_local[0] - M[ll]["prox"][0], foot_local[1] - M[ll]["prox"][1]))
+                off = (sz[0] / 2 + (8 if side == "R" else -8) - ax_[0], sz[1] - 52 - ax_[1])
                 sand = load("clothes", "sandal_A.png" if side == "R" else "sandal_B.png")
-                add(11, lambda sa=sand, fk=fk, pk=pk: self._draw(canvas, sa, (sa.width / 2, sa.height * 0.62), fk, pk, s * FIT["sandal"]["s"]))
+                spt = self._fwd(ankle, pfoot, s, off)
+                add(12, lambda sa=sand, sp_=spt, pf=pfoot: self._draw(canvas, sa, (sa.width / 2, sa.height * 0.62), sp_, pf, s * FIT["sandal"]["s"]))
 
         # ----- torso, clothes -----
         add(20, lambda: self._draw(canvas, self.img["torso"], tor_pt, T, tphi, s))
@@ -119,7 +142,7 @@ class Character:
             sh = load("clothes", "shorts_front.png"); f = FIT["shorts"]
             sw = tw(f["at"])
             add(21, lambda: self._draw(canvas, sh, f["anchor"], sw, tphi, s * f["s"]))
-            ts = load("clothes", "tshirt_front.png"); f2 = FIT["shirt"]
+            ts = load("clothes", "tshirt_front_nosleeve.png"); f2 = FIT["shirt"]
             tw_ = tw(f2["at"])
             add(30, lambda: self._draw(canvas, ts, f2["anchor"], tw_, tphi, s * f2["s"]))
 
@@ -131,12 +154,19 @@ class Character:
             elbow = self._fwd(sp, ph, sa, (M[ua]["dist"][0] - M[ua]["prox"][0], M[ua]["dist"][1] - M[ua]["prox"][1]))
             pf = P["shoulder_" + side] + P["elbow_" + side] + tphi
             pfa = pf + rig.align(fa)
-            add(25, lambda u=ua, sp=sp, ph=ph: self._draw(canvas, self.img[u], M[u]["prox"], sp, ph, sa))
-            add(26, lambda f_=fa, e=elbow, pfa=pfa: self._draw(canvas, self.img[f_], M[f_]["prox"], e, pfa, sa))
+            add(31, lambda u=ua, sp=sp, ph=ph: self._draw(canvas, self.img[u], M[u]["prox"], sp, ph, sa))
+            add(32, lambda f_=fa, e=elbow, pfa=pfa: self._draw(canvas, self.img[f_], M[f_]["prox"], e, pfa, sa))
+            if self.clothes:
+                sl = load("clothes", "sleeve_" + side + ".png")
+                sp0, sp1 = axis_ends(sl); slen = math.hypot(*(sp1 - sp0))
+                ulen = math.hypot(M[ua]["dist"][0] - M[ua]["prox"][0], M[ua]["dist"][1] - M[ua]["prox"][1])
+                ss = sa * FIT["sleeve"]["len"] * ulen / slen
+                vx, vy = sp1 - sp0; psl = P["shoulder_" + side] + tphi + (90.0 - math.degrees(math.atan2(vy, vx)))
+                add(33, lambda sl=sl, sp0=sp0, sp=sp, psl=psl, ss=ss: self._draw(canvas, sl, (sp0[0], sp0[1]), (sp[0], sp[1] + FIT["sleeve"]["dy"] * s), psl, ss))
             if self.clothes and side == "L":
                 wp = self._fwd(elbow, pfa, sa, (M[fa]["dist"][0] - M[fa]["prox"][0], M[fa]["dist"][1] - M[fa]["prox"][1] - FIT["watch"]["back"]))
                 w = load("clothes", "watch.png")
-                add(27, lambda w=w, wp=wp, pfa=pfa: self._draw(canvas, w, (w.width / 2, w.height / 2), wp, pfa, sa * FIT["watch"]["s"]))
+                add(34, lambda w=w, wp=wp, pfa=pfa: self._draw(canvas, w, (w.width / 2, w.height / 2), wp, pfa, sa * FIT["watch"]["s"]))
 
         # ----- neck + head -----
         nm = M["neck"]; sock = tw(FIT["neck_socket"])
