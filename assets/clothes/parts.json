@@ -1,0 +1,112 @@
+[
+ {
+  "file": "tshirt_front.png",
+  "bbox": [
+   37,
+   27,
+   505,
+   410
+  ],
+  "area": 123726
+ },
+ {
+  "file": "tshirt_back.png",
+  "bbox": [
+   526,
+   27,
+   992,
+   410
+  ],
+  "area": 123117
+ },
+ {
+  "file": "sleeve_R.png",
+  "bbox": [
+   1010,
+   105,
+   1214,
+   342
+  ],
+  "area": 32702
+ },
+ {
+  "file": "sleeve_L.png",
+  "bbox": [
+   1303,
+   104,
+   1507,
+   342
+  ],
+  "area": 32649
+ },
+ {
+  "file": "shorts_front.png",
+  "bbox": [
+   75,
+   457,
+   468,
+   767
+  ],
+  "area": 106168
+ },
+ {
+  "file": "shorts_back.png",
+  "bbox": [
+   554,
+   457,
+   950,
+   767
+  ],
+  "area": 105842
+ },
+ {
+  "file": "short_leg_R.png",
+  "bbox": [
+   1016,
+   488,
+   1202,
+   762
+  ],
+  "area": 43839
+ },
+ {
+  "file": "short_leg_L.png",
+  "bbox": [
+   1292,
+   488,
+   1478,
+   762
+  ],
+  "area": 43937
+ },
+ {
+  "file": "sandal_A.png",
+  "bbox": [
+   159,
+   817,
+   456,
+   994
+  ],
+  "area": 36478
+ },
+ {
+  "file": "sandal_B.png",
+  "bbox": [
+   608,
+   817,
+   906,
+   994
+  ],
+  "area": 36535
+ },
+ {
+  "file": "watch.png",
+  "bbox": [
+   1088,
+   822,
+   1355,
+   981
+  ],
+  "area": 30676
+ }
+]

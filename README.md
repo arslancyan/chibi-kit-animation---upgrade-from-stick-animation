@@ -19,6 +19,7 @@ This project is a fork of the MIT-licensed *Ricks Clips Style Kit* by @caesarsca
 - [ ] Chibi renderer (`characters/chibi.js`) replacing `rick.js`
 - [x] Base body parts cut into transparent PNGs (`assets/base_body/parts/`, `rig.json` with estimated pivots)
 - [x] 8 expression heads cut (`assets/faces/expressions/`)
+- [x] Mouth shapes (9), hair (5 views), clothes (11 pieces) and 5-view turnaround cut into transparent PNGs (`assets/mouths|hair|clothes|turnaround`)
 - [ ] 20-face personality sheet added as a file (`assets/faces/`), see `docs/11_PERSONALITY_FACES.md`
 - [ ] Verify rig pivots with a test render
 - [ ] Anime-film grade, toon shader and FX in `engine/` and `blender/`

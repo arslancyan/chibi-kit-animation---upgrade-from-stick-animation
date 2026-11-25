@@ -1,0 +1,52 @@
+[
+ {
+  "file": "hair_front.png",
+  "bbox": [
+   30,
+   78,
+   508,
+   434
+  ],
+  "area": 81142
+ },
+ {
+  "file": "hair_back_layer.png",
+  "bbox": [
+   547,
+   66,
+   988,
+   483
+  ],
+  "area": 133874
+ },
+ {
+  "file": "hair_side.png",
+  "bbox": [
+   1045,
+   82,
+   1513,
+   487
+  ],
+  "area": 103851
+ },
+ {
+  "file": "hair_back_view.png",
+  "bbox": [
+   189,
+   522,
+   655,
+   959
+  ],
+  "area": 143123
+ },
+ {
+  "file": "hair_three_quarter.png",
+  "bbox": [
+   800,
+   528,
+   1303,
+   929
+  ],
+  "area": 102385
+ }
+]

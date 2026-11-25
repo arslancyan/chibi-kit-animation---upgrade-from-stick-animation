@@ -1,5 +1,6 @@
 """Chroma-key a green-screen sheet into an RGBA image and slice it into parts.
-Usage: python3 -I tools/chibi/chroma.py <sheet.png|webp> <out_dir> [--min-area N]
+Usage: python3 -I tools/chibi/chroma.py <sheet.png|webp> <out_dir> [--min-area N] [--rows R] [--names a,b,c]
+--rows R: sort parts row-major using R row bands (default: column-major). --names: file names in sorted order.
 Writes full_rgba.png and part_XX.png plus parts.json (bbox of each part in sheet pixels)."""
 import sys, json, os
 import numpy as np
@@ -38,11 +39,18 @@ if __name__ == "__main__":
     os.makedirs(out, exist_ok=True)
     rgba = key(Image.open(src))
     rgba.save(os.path.join(out, "full_rgba.png"))
-    parts = sorted(slice_parts(rgba, ma), key=lambda p: (p["bbox"][0] // 100, p["bbox"][1]))
+    parts = slice_parts(rgba, ma)
+    if "--rows" in sys.argv:
+        R = int(sys.argv[sys.argv.index("--rows") + 1]); H = rgba.size[1]
+        parts.sort(key=lambda p: ((p["bbox"][1] + p["bbox"][3]) / 2 // (H / R), p["bbox"][0]))
+    else:
+        parts.sort(key=lambda p: (p["bbox"][0] // 100, p["bbox"][1]))
+    names = sys.argv[sys.argv.index("--names") + 1].split(",") if "--names" in sys.argv else []
     meta = []
     for i, p in enumerate(parts):
-        p["img"].save(os.path.join(out, f"part_{i:02d}.png"))
-        meta.append(dict(file=f"part_{i:02d}.png", bbox=p["bbox"], area=p["area"]))
+        fn = (names[i] if i < len(names) else f"part_{i:02d}") + ".png"
+        p["img"].save(os.path.join(out, fn))
+        meta.append(dict(file=fn, bbox=p["bbox"], area=p["area"]))
     json.dump(meta, open(os.path.join(out, "parts.json"), "w"), indent=1)
     print(len(meta), "parts")
     for m in meta: print(m)

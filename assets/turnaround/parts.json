@@ -1,0 +1,52 @@
+[
+ {
+  "file": "front.png",
+  "bbox": [
+   85,
+   29,
+   414,
+   766
+  ],
+  "area": 171195
+ },
+ {
+  "file": "three_quarter_front.png",
+  "bbox": [
+   472,
+   30,
+   795,
+   766
+  ],
+  "area": 163046
+ },
+ {
+  "file": "side.png",
+  "bbox": [
+   849,
+   30,
+   1148,
+   765
+  ],
+  "area": 120236
+ },
+ {
+  "file": "three_quarter_back.png",
+  "bbox": [
+   1203,
+   30,
+   1531,
+   766
+  ],
+  "area": 163003
+ },
+ {
+  "file": "back.png",
+  "bbox": [
+   1576,
+   29,
+   1899,
+   766
+  ],
+  "area": 168316
+ }
+]
