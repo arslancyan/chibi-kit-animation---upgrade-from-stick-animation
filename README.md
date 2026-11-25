@@ -21,7 +21,8 @@ This project is a fork of the MIT-licensed *Ricks Clips Style Kit* by @caesarsca
 - [x] 8 expression heads cut (`assets/faces/expressions/`)
 - [x] Mouth shapes (9), hair (5 views), clothes (11 pieces) and 5-view turnaround cut into transparent PNGs (`assets/mouths|hair|clothes|turnaround`)
 - [ ] 20-face personality sheet added as a file (`assets/faces/`), see `docs/11_PERSONALITY_FACES.md`
-- [ ] Verify rig pivots with a test render
+- [x] Assembler `tools/chibi/assemble.py` renders posed characters (see `docs/rig_tests/poses.png`)
+- [ ] Fix known assembler issues: stubby arms behind the shirt, walk-cycle feet, sleeves baked into shirt
 - [ ] Anime-film grade, toon shader and FX in `engine/` and `blender/`
 - [ ] First test short
 
